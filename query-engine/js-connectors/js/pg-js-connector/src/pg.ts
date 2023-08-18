@@ -3,7 +3,7 @@ import { bindConnector, bindTransaction, Debug } from '@jkomyno/prisma-js-connec
 import type { Connector, ResultSet, Query, ConnectorConfig, Queryable, Transaction } from '@jkomyno/prisma-js-connector-utils'
 import { fieldToColumnType } from './conversion'
 
-const debug = Debug('prisma:js-connector:planetscale')
+const debug = Debug('prisma:js-connector:pg')
 
 export type PrismaPgConfig = ConnectorConfig
 
@@ -64,6 +64,8 @@ class PgTransaction extends PgQueryable implements Transaction {
     }
 
     async commit(): Promise<void> {
+        const tag = '[js::commit]'
+        debug(`${tag} committing transaction`)
         try {
             await this.driver.client.query('COMMIT');
         } finally {
@@ -73,6 +75,8 @@ class PgTransaction extends PgQueryable implements Transaction {
     }
 
     async rollback(): Promise<void> {
+        const tag = '[js::rollback]'
+        debug(`${tag} rolling back the transaction`)
         try {
             await this.driver.client.query('ROLLBACK');
         } finally {
