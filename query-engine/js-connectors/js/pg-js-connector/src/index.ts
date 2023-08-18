@@ -1,5 +1,6 @@
 export { createPgConnector } from './pg'
 export type { PrismaPgConfig } from './pg'
+
 // import { Pool } from 'pg'
 
 // const globalPool = new Pool({

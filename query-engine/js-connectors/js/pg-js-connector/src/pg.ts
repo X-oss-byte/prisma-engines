@@ -64,15 +64,25 @@ class PgTransaction extends PgQueryable implements Transaction {
     }
 
     async commit(): Promise<void> {
-        await this.driver.client.query('COMMIT');
+        try {
+            await this.driver.client.query('COMMIT');
+        } finally {
+            (this.driver.client as pg.PoolClient).release()
+        }
+
     }
 
     async rollback(): Promise<void> {
-        await this.driver.client.query('ROLLBACK');
+        try {
+            await this.driver.client.query('ROLLBACK');
+        } finally {
+            (this.driver.client as pg.PoolClient).release()
+        }
     }
 }
 
 class PrismaPg extends PgQueryable implements Connector {
+
     constructor(config: PrismaPgConfig) {
         const { url: connectionString } = config;
         const client = new pg.Pool({
